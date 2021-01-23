@@ -6,7 +6,7 @@ type Article struct {
 	Desc          string `json:"desc"`
 	Content       string `json:"content"`
 	CoverImageUrl string `json:"cover_image_url"`
-	State         string `json:"state"`
+	State         uint8  `json:"state"`
 }
 
 func (a Article) TableName() string {
