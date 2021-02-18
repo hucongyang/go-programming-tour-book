@@ -1,7 +1,10 @@
 package v1
 
 import (
+	"fmt"
 	"github.com/gin-gonic/gin"
+	"github.com/go-programming-tour-book/blog-service/global"
+	"github.com/go-programming-tour-book/blog-service/internal/service"
 	"github.com/go-programming-tour-book/blog-service/pkg/app"
 	"github.com/go-programming-tour-book/blog-service/pkg/errcode"
 )
@@ -32,18 +35,19 @@ func (t Tag) Get(c *gin.Context) {
 // @Failure 500 {object} errcode.Error "内部错误"
 // @Router /api/v1/tags [get]
 func (t Tag) List(c *gin.Context) {
-	param := struct {
-		Name  string `form:"name" binging:"max=100"`
-		State uint8  `form:"state,default=1" binging:"oneof=0 1"`
-	}{}
-
+	param := service.TagListRequest{}
 	response := app.NewResponse(c)
 	valid, errs := app.BindAndValid(c, &param)
-	if valid == true {
-		//global.Logger.Errorf(c, "app.BindAndValid errs: %v", errs)
+	if !valid {
+		global.Logger.Errorf(c, "app.BindAndValid errs: %v", errs)
 		response.ToErrorResponse(errcode.InvalidParams.WithDetails(errs.Errors()...))
 		return
 	}
+
+	svc := service.New(c.Request.Context())
+	pager := app.Pager{Page: app.GetPage(c), PageSize: app.GetPageSize(c)}
+	fmt.Println(svc)
+	fmt.Println(pager)
 	response.ToResponse(gin.H{})
 	return
 }

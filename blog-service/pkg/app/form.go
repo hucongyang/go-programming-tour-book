@@ -32,6 +32,10 @@ func (v ValidErrors) Errors() []string {
 	return errs
 }
 
+/**
+通过ShouldBind进行参数绑定和入参校验，
+当发生错误后，再通过在中间件 Translations 中设置的 Translator 对错误消息体进行具体的翻译
+*/
 func BindAndValid(c *gin.Context, v interface{}) (bool, ValidErrors) {
 	var errs ValidErrors
 	err := c.ShouldBind(v)
